@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <err.h>
 
 static void echo(int ch)
