@@ -25,9 +25,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+CFLAGS += -static
+
 all: pingtty
 
 pingtty: pingtty.c
+
+install: pingtty
+	install -s -m 755 pingtty /usr/local/bin/pingtty
 
 clean:
 	-rm -f pingtty
