@@ -52,7 +52,7 @@ static void echo(int ch)
 	putchar('.');
 }
 
-static long ping_tty(void)
+static long ping_tty(int wait_ms)
 {
 	struct termios tio0, tio1;
 	struct timeval tv0, tv1;
@@ -74,7 +74,7 @@ static long ping_tty(void)
 	write(1, "\033[c", 3);
 	while (read(0, buf, sizeof buf) <= 0);
 	gettimeofday(&tv1, NULL);
-	sleep(1);
+	usleep(wait_ms * 1000);
 	
 	fl = fcntl(0, F_GETFL);
 	fcntl(0, F_SETFL, fl | O_NDELAY);
@@ -119,12 +119,15 @@ int main(int argc, char **argv)
 	long min = LONG_MAX;
 	long max = 0;
 	long t;
+	int wait_ms = 1000;
 	int cnt = 3;
 	int pos;
 	int ttynl;
 	int len;
 	int i, n;
 	
+	if (argc > 2)
+		wait_ms = atoi(argv[2]);
 	if (argc > 1)
 		cnt = atoi(argv[1]);
 	ttyn = ttyname(0);
@@ -141,7 +144,7 @@ int main(int argc, char **argv)
 	pos = ttynl + 2;
 	for (i = 0; i < cnt; i++)
 	{
-		t = ping_tty();
+		t = ping_tty(wait_ms);
 		if (t < 0)
 		{
 			putchar('\n');
